@@ -10,9 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost4200", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200","AllowAll")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -57,14 +57,16 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    
     app.UseHttpsRedirection();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 // app.UseHttpsRedirection();
 
-app.UseCors("AllowLocalhost4200");
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
