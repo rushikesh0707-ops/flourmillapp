@@ -52,7 +52,15 @@ builder.Services.AddSwaggerGen();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://*:{port}");
 
+
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate(); // Automatically applies migrations
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
