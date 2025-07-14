@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://flourmillangular-production.up.railway.app", "AllowAll")
+        policy.WithOrigins("https://flourmillangular-production.up.railway.app")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
