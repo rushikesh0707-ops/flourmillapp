@@ -18,9 +18,21 @@ namespace FlourmillAPI.Controllers
         [HttpGet("{deliveryBoyId}/orders")]
         public async Task<IActionResult> GetAssignedOrders(int deliveryBoyId)
         {
-            var orders = await _orderService.GetOrdersForDeliveryBoyAsync(deliveryBoyId);
-            return Ok(orders);
+            try
+            {
+                var orders = await _orderService.GetOrdersForDeliveryBoyAsync(deliveryBoyId);
+
+                if (orders == null || !orders.Any())
+                    return NotFound("No orders assigned to this delivery boy.");
+
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error: {ex.Message}");
+            }
         }
+
 
         [HttpPut("{deliveryBoyId}/orders/{orderId}/mark-delivered")]
         public async Task<IActionResult> MarkOrderAsDelivered(int deliveryBoyId, int orderId)

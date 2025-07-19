@@ -137,11 +137,20 @@ namespace FlourmillAPI.Services.Implementations
 
         public async Task<List<Order>> GetOrdersForDeliveryBoyAsync(int deliveryBoyId)
         {
-            return await _context.Orders
-                .Include(o => o.OrderItems)
-                .Where(o => o.DeliveryBoyId == deliveryBoyId && !o.IsDelivered)
-                .ToListAsync();
+            try
+            {
+                return await _context.Orders
+                    .Where(o => o.DeliveryBoyId == deliveryBoyId)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                Console.WriteLine("Error fetching orders for delivery boy: " + ex.Message);
+                return new List<Order>(); // return empty to avoid 500
+            }
         }
+
 
         public async Task<bool> MarkOrderAsDeliveredAsync(int orderId, int deliveryBoyId)
         {
