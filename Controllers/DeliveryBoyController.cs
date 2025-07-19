@@ -1,5 +1,6 @@
 ﻿using FlourmillAPI.Data;
 using FlourmillAPI.DTOs;
+using FlourmillAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlourmillAPI.Controllers
@@ -18,12 +19,24 @@ namespace FlourmillAPI.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] DeliveryBoyLoginDto dto)
         {
-            var deliveryBoy = _context.DeliveryBoys.FirstOrDefault(x => x.Email == dto.Email && x.Password == dto.Password);
-            if (deliveryBoy == null)
-                return Unauthorized("Invalid credentials");
+            var deliveryBoy = _context.Users
+                .FirstOrDefault(u => u.Email == dto.Email && u.PasswordHash == dto.Password && u.Role == Role.DeliveryBoy);
 
-            return Ok(deliveryBoy);
+            if (deliveryBoy == null)
+                return Unauthorized("Invalid credentials or not a delivery boy");
+
+            var response = new LoginResponseDto
+            {
+                Id = deliveryBoy.Id,
+                FullName = deliveryBoy.FullName,
+                Email = deliveryBoy.Email,
+                Role = deliveryBoy.Role.ToString(),
+                Phone = deliveryBoy.Phone,
+            };
+
+            return Ok(response);
         }
+
 
         [HttpGet("{id}/orders")]
         public IActionResult GetAssignedOrders(int id)
