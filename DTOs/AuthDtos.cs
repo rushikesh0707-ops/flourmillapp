@@ -24,5 +24,7 @@ namespace FlourmillAPI.DTOs
         public required string FullName { get; set; }
         public required string Email { get; set; }
         public Role Role { get; set; }
+
+        public int UserId { get; set; }
     }
 }

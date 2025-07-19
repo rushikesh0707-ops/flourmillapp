@@ -47,7 +47,8 @@ namespace FlourmillAPI.Services.Implementations
                 Token = token,
                 FullName = user.FullName,
                 Email = user.Email,
-                Role = user.Role
+                Role = user.Role,
+                UserId = user.Id
             };
         }
 
