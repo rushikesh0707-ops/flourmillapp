@@ -134,5 +134,25 @@ namespace FlourmillAPI.Services.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<Order>> GetOrdersForDeliveryBoyAsync(int deliveryBoyId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .Where(o => o.DeliveryBoyId == deliveryBoyId && !o.IsDelivered)
+                .ToListAsync();
+        }
+
+        public async Task<bool> MarkOrderAsDeliveredAsync(int orderId, int deliveryBoyId)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId && o.DeliveryBoyId == deliveryBoyId);
+            if (order == null) return false;
+
+            order.IsDelivered = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
     }
 }

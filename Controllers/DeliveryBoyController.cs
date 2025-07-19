@@ -1,63 +1,33 @@
-﻿using FlourmillAPI.Data;
-using FlourmillAPI.DTOs;
-using FlourmillAPI.Models;
+﻿using FlourmillAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace FlourmillAPI.Controllers
 {
     [ApiController]
-    [Route("api/deliveryboy")]
+    [Route("api/delivery")]
     public class DeliveryBoyController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IOrderService _orderService;
 
-        public DeliveryBoyController(AppDbContext context)
+        public DeliveryBoyController(IOrderService orderService)
         {
-            _context = context;
+            _orderService = orderService;
         }
 
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] DeliveryBoyLoginDto dto)
+        [HttpGet("{deliveryBoyId}/orders")]
+        public async Task<IActionResult> GetAssignedOrders(int deliveryBoyId)
         {
-            var deliveryBoy = _context.Users
-                .FirstOrDefault(u => u.Email == dto.Email && u.PasswordHash == dto.Password && u.Role == Role.DeliveryBoy);
-
-            if (deliveryBoy == null)
-                return Unauthorized("Invalid credentials or not a delivery boy");
-
-            var response = new LoginResponseDto
-            {
-                Id = deliveryBoy.Id,
-                FullName = deliveryBoy.FullName,
-                Email = deliveryBoy.Email,
-                Role = deliveryBoy.Role.ToString(),
-                Phone = deliveryBoy.Phone,
-            };
-
-            return Ok(response);
-        }
-
-
-        [HttpGet("{id}/orders")]
-        public IActionResult GetAssignedOrders(int id)
-        {
-            var orders = _context.Orders
-                .Where(o => o.AssignedDeliveryBoyId == id && !o.IsDelivered)
-                .ToList();
+            var orders = await _orderService.GetOrdersForDeliveryBoyAsync(deliveryBoyId);
             return Ok(orders);
         }
 
-        [HttpPut("{deliveryBoyId}/orders/{orderId}/deliver")]
-        public IActionResult MarkOrderDelivered(int deliveryBoyId, int orderId)
+        [HttpPut("{deliveryBoyId}/orders/{orderId}/mark-delivered")]
+        public async Task<IActionResult> MarkOrderAsDelivered(int deliveryBoyId, int orderId)
         {
-            var order = _context.Orders.FirstOrDefault(o => o.Id == orderId && o.AssignedDeliveryBoyId == deliveryBoyId);
-            if (order == null)
-                return NotFound("Order not found or not assigned");
-
-            order.IsDelivered = true;
-            _context.SaveChanges();
-            return Ok("Marked as delivered");
+            var success = await _orderService.MarkOrderAsDeliveredAsync(orderId, deliveryBoyId);
+            if (!success) return NotFound("Order not found or not assigned to this delivery boy.");
+            return Ok("Order marked as delivered.");
         }
     }
-
 }

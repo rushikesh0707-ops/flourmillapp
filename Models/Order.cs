@@ -20,11 +20,16 @@ namespace FlourmillAPI.Models
         public bool IsPaid { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public int? DeliveryBoyId { get; set; }
-        public string? DeliveryBoyName { get; set; }
+        
 
         public int? AssignedDeliveryBoyId { get; set; }
-        public bool IsDelivered { get; set; } = false;
+ 
+
+        public int? DeliveryBoyId { get; set; } // This should be enough for assignment
+        public string? DeliveryBoyName { get; set; }
+
+        public bool IsDelivered { get; set; } = false;  // ✅ Tracks delivery status
+        //public DateTime? OrderDate { get; set; }      // 
 
 
     }
