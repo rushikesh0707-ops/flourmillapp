@@ -27,10 +27,10 @@ namespace FlourmillAPI.Controllers
             return Ok(orders);
         }
 
-        [HttpGet("orders/{id}")]
-        public async Task<IActionResult> GetOrderById(int id)
+        [HttpGet("orders/{orderId}")]
+        public async Task<IActionResult> GetOrderById(int orderId)
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
+            var order = await _orderService.GetOrderByIdAsync(orderId);
             if (order == null) return NotFound("Order not found");
             return Ok(order);
         }
