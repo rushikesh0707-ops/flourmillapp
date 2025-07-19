@@ -47,6 +47,35 @@ namespace FlourmillAPI.Services.Implementations
             });
         }
 
+        //public async Task<OrderDto> GetOrderByIdAsync(int orderId)
+        //{
+        //    var order = await _context.Orders
+        //        .Include(o => o.OrderItems)
+        //        .FirstOrDefaultAsync(o => o.Id == orderId);
+
+        //    if (order == null) return null;
+
+        //    return new OrderDto
+        //    {
+        //        OrderId = order.Id,
+        //        UserId = order.UserId,
+        //        UserName = order.UserName,
+        //        Address = order.Address,
+        //        TotalAmount = (double)order.TotalAmount,
+        //        IsPaid = order.IsPaid,
+        //        DeliveryBoyId = order.DeliveryBoyId,
+        //        DeliveryBoyName = order.DeliveryBoyName,
+        //        Items = order.OrderItems.Select(item => new OrderItemDto
+        //        {
+        //            ProductId = item.ProductId,
+        //            ProductName = item.ProductName,
+        //            Quantity = item.Quantity,
+        //            Price = (double)item.Price,
+        //            ImageUrl = item.ImageUrl
+        //        }).ToList()
+        //    };
+        //}
+
         public async Task<OrderDto> GetOrderByIdAsync(int orderId)
         {
             var order = await _context.Orders
@@ -59,22 +88,23 @@ namespace FlourmillAPI.Services.Implementations
             {
                 OrderId = order.Id,
                 UserId = order.UserId,
-                UserName = order.UserName,
-                Address = order.Address,
-                TotalAmount = (double)order.TotalAmount,
+                UserName = order.UserName ?? "Unknown",
+                Address = order.Address ?? "Not Provided",
+                TotalAmount = (double)(order.TotalAmount),
                 IsPaid = order.IsPaid,
                 DeliveryBoyId = order.DeliveryBoyId,
-                DeliveryBoyName = order.DeliveryBoyName,
-                Items = order.OrderItems.Select(item => new OrderItemDto
+                DeliveryBoyName = order.DeliveryBoyName ?? "Not Assigned",
+                Items = order.OrderItems?.Select(item => new OrderItemDto
                 {
                     ProductId = item.ProductId,
-                    ProductName = item.ProductName,
+                    ProductName = item.ProductName ?? "Unnamed Product",
                     Quantity = item.Quantity,
-                    Price = (double)item.Price,
-                    ImageUrl = item.ImageUrl
-                }).ToList()
+                    Price = (double)(item.Price),
+                    ImageUrl = item.ImageUrl ?? ""
+                }).ToList() ?? new List<OrderItemDto>()
             };
         }
+
 
         public async Task<bool> AssignDeliveryBoyAsync(int orderId, int deliveryBoyId)
         {
