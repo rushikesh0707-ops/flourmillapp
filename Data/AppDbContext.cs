@@ -15,6 +15,8 @@ namespace FlourmillAPI.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Payment> Payments { get; set; }
 
+        public DbSet<DeliveryBoy> DeliveryBoys { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

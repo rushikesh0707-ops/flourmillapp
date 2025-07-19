@@ -23,6 +23,9 @@ namespace FlourmillAPI.Models
         public int? DeliveryBoyId { get; set; }
         public string? DeliveryBoyName { get; set; }
 
-      
+        public int? AssignedDeliveryBoyId { get; set; }
+        public bool IsDelivered { get; set; } = false;
+
+
     }
 }
