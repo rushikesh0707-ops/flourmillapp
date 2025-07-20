@@ -135,21 +135,60 @@ namespace FlourmillAPI.Services.Implementations
             return true;
         }
 
-        public async Task<List<Order>> GetOrdersForDeliveryBoyAsync(int deliveryBoyId)
+        //public async Task<List<Order>> GetOrdersForDeliveryBoyAsync(int deliveryBoyId)
+        //{
+        //    try
+        //    {
+        //        return await _context.Orders
+        //            .Where(o => o.DeliveryBoyId == deliveryBoyId)
+        //            .ToListAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception if needed  
+        //        Console.WriteLine("Error fetching orders for delivery boy: " + ex.Message);
+        //        return new List<Order>(); // return empty to avoid 500
+        //    }
+        //}
+
+        public async Task<List<OrderDto>> GetOrdersForDeliveryBoyAsync(int deliveryBoyId)
         {
             try
             {
-                return await _context.Orders
+                var orders = await _context.Orders
+                    .Include(o => o.OrderItems)
+                    .Include(o => o.User) // 👈 join with User table
                     .Where(o => o.DeliveryBoyId == deliveryBoyId)
                     .ToListAsync();
+
+                return orders.Select(order => new OrderDto
+                {
+                    OrderId = order.Id,
+                    UserId = order.UserId,
+                    UserName = order.User?.FullName ?? "Unknown",
+                    Phone = order.User?.Phone ?? "N/A",
+                    Address = order.Address ?? "Not Provided",
+                    TotalAmount = (double)(order.TotalAmount),
+                    IsPaid = order.IsPaid,
+                    DeliveryBoyId = order.DeliveryBoyId,
+                    DeliveryBoyName = order.DeliveryBoyName ?? "Not Assigned",
+                    Items = order.OrderItems?.Select(item => new OrderItemDto
+                    {
+                        ProductId = item.ProductId,
+                        ProductName = item.ProductName ?? "Unnamed Product",
+                        Quantity = item.Quantity,
+                        Price = (double)item.Price,
+                        ImageUrl = item.ImageUrl ?? ""
+                    }).ToList() ?? new List<OrderItemDto>()
+                }).ToList();
             }
             catch (Exception ex)
             {
-                // Log the exception if needed
                 Console.WriteLine("Error fetching orders for delivery boy: " + ex.Message);
-                return new List<Order>(); // return empty to avoid 500
+                return new List<OrderDto>();
             }
         }
+
 
 
         public async Task<bool> MarkOrderAsDeliveredAsync(int orderId, int deliveryBoyId)
