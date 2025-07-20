@@ -20,7 +20,7 @@ namespace FlourmillAPI.Models
         public bool IsPaid { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public DateTime DeliveredAt { get; set; }
+       
 
         public int? AssignedDeliveryBoyId { get; set; }
  

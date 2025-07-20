@@ -200,7 +200,7 @@ namespace FlourmillAPI.Services.Implementations
                 return false;
 
             order.Status = "Delivered";
-            order.DeliveredAt = DateTime.UtcNow; // Optional
+           // order.DeliveredAt = DateTime.UtcNow; // Optional
             await _context.SaveChangesAsync();
 
             return true;
