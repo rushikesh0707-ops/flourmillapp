@@ -29,7 +29,9 @@ namespace FlourmillAPI.Models
         public string? DeliveryBoyName { get; set; }
 
         public bool IsDelivered { get; set; } = false;  // ✅ Tracks delivery status
-        //public DateTime? OrderDate { get; set; }      // 
+        //public DateTime? OrderDate { get; set; }      //
+        //
+        public string Status { get; set; }
 
 
     }

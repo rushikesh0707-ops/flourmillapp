@@ -15,6 +15,8 @@
         public int? DeliveryBoyId { get; set; }
         public string? DeliveryBoyName { get; set; }
 
+        public string Status { get; set; }
+
         public List<OrderItemDto> Items { get; set; } = new();
     }
 }
