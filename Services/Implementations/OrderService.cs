@@ -193,13 +193,19 @@ namespace FlourmillAPI.Services.Implementations
 
         public async Task<bool> MarkOrderAsDeliveredAsync(int orderId, int deliveryBoyId)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId && o.DeliveryBoyId == deliveryBoyId);
-            if (order == null) return false;
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.DeliveryBoyId == deliveryBoyId);
 
-            order.IsDelivered = true;
+            if (order == null || order.Status == "Delivered")
+                return false;
+
+            order.Status = "Delivered";
+            order.DeliveredAt = DateTime.UtcNow; // Optional
             await _context.SaveChangesAsync();
+
             return true;
         }
+
 
 
     }
