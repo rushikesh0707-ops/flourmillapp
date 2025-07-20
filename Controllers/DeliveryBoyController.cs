@@ -39,7 +39,9 @@ namespace FlourmillAPI.Controllers
         {
             var success = await _orderService.MarkOrderAsDeliveredAsync(orderId, deliveryBoyId);
             if (!success) return NotFound("Order not found or not assigned to this delivery boy.");
-            return Ok("Order marked as delivered.");
+
+            var updatedOrders = await _orderService.GetOrdersForDeliveryBoyAsync(deliveryBoyId);
+            return Ok(updatedOrders); // ✅ return updated list with statuses
         }
     }
 }
