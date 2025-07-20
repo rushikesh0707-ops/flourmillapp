@@ -16,6 +16,7 @@
         public string? DeliveryBoyName { get; set; }
 
         public string Status { get; set; }
+        public DateTime DeliveredAt  { get; set; }
 
         public List<OrderItemDto> Items { get; set; } = new();
     }
